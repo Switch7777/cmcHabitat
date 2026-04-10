@@ -1,78 +1,23 @@
-"use client";
-
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { useLang } from "../context/LangContext";
 import styles from "./Services.module.css";
 
 const CONTENT = {
   fr: {
     tag: "Nos services",
-    title: "Des solutions sur-mesure pour chaque projet",
-    subtitle: "De la cuisine au dressing, nous concevons et réalisons vos espaces avec précision et élégance.",
     services: [
-      {
-        icon: "🍳",
-        title: "Cuisines",
-        desc: "Conception et installation de cuisines haut de gamme, alliant fonctionnalité et esthétique. Du premier croquis à la livraison clé en main.",
-        href: "/servicesCuisine",
-        label: "Découvrir",
-      },
-      {
-        icon: "🛁",
-        title: "Salles de bains",
-        desc: "Rénovation complète de salles de bains. Carrelage, plomberie, sanitaires, éclairage — nous gérons chaque détail.",
-        href: "/servicesSdb",
-        label: "Découvrir",
-      },
-      {
-        icon: "🚪",
-        title: "Placards & Dressings",
-        desc: "Solutions de rangement sur-mesure, conçus pour s'intégrer parfaitement à votre intérieur et maximiser l'espace.",
-        href: "/servicesPlacard",
-        label: "Découvrir",
-      },
-      {
-        icon: "🏗️",
-        title: "Rénovations",
-        desc: "Rénovation partielle ou complète d'appartements, villas et locaux commerciaux. Nous gérons l'ensemble des corps de métiers.",
-        href: "/renovation",
-        label: "Découvrir",
-      },
+      { title: "Architecte d'intérieur", href: "/architecture", bg: "/wallpaper/wallscreen.png" },
+      { title: "Économie de construction", href: "/consulting", bg: "/wallpaper/slide2.png" },
+      { title: "Maîtrise d'œuvre", href: "/moe", bg: "/wallpaper/slide3.png" },
     ],
   },
   en: {
-    tag: "Our Services",
-    title: "Tailored solutions for every project",
-    subtitle: "From kitchens to walk-in closets, we design and build your spaces with precision and elegance.",
+    tag: "Our services",
     services: [
-      {
-        icon: "🍳",
-        title: "Kitchens",
-        desc: "Design and installation of premium kitchens, combining functionality and aesthetics. From first sketch to turnkey delivery.",
-        href: "/servicesCuisine",
-        label: "Discover",
-      },
-      {
-        icon: "🛁",
-        title: "Bathrooms",
-        desc: "Complete bathroom renovation. Tiling, plumbing, fixtures, lighting — we handle every detail.",
-        href: "/servicesSdb",
-        label: "Discover",
-      },
-      {
-        icon: "🚪",
-        title: "Closets & Dressings",
-        desc: "Custom storage solutions, designed to perfectly integrate into your home and maximize space.",
-        href: "/servicesPlacard",
-        label: "Discover",
-      },
-      {
-        icon: "🏗️",
-        title: "Renovations",
-        desc: "Partial or complete renovation of apartments, villas and commercial spaces. We coordinate all trades.",
-        href: "/renovation",
-        label: "Discover",
-      },
+      { title: "Interior Architect", href: "/architecture", bg: "/wallpaper/wallscreen.png" },
+      { title: "Construction Economy", href: "/consulting", bg: "/wallpaper/slide2.png" },
+      { title: "Project Management", href: "/moe", bg: "/wallpaper/slide3.png" },
     ],
   },
 };
@@ -80,28 +25,54 @@ const CONTENT = {
 export default function Services() {
   const { lang } = useLang();
   const C = CONTENT[lang];
+  const gridRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const cards = gridRef.current?.querySelectorAll("[data-card]");
+    if (!cards) return;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.cardVisible);
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    cards.forEach((card) => obs.observe(card));
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <section className={styles.services} id="services">
       <div className={styles.inner}>
-        <div className={styles.header}>
-          <span className={styles.tag}>{C.tag}</span>
-          <h2 className={styles.title}>{C.title}</h2>
-          <p className={styles.subtitle}>{C.subtitle}</p>
-        </div>
+        <h2 className={styles.tag}>{C.tag}</h2>
 
-        <div className={styles.grid}>
+        <div className={styles.grid} ref={gridRef}>
           {C.services.map((s, i) => (
-            <Link href={s.href} key={i} className={styles.card}>
-              <span className={styles.cardIcon}>{s.icon}</span>
-              <h3 className={styles.cardTitle}>{s.title}</h3>
-              <p className={styles.cardDesc}>{s.desc}</p>
-              <span className={styles.cardLink}>
-                {s.label}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </span>
+            <Link href={s.href} key={i}>
+              <a
+                className={styles.card}
+                data-card
+                style={{ "--delay": `${i * 0.18}s` }}
+              >
+                <img src={s.bg} alt={s.title} className={styles.cardImage} />
+                <div className={styles.cardOverlay} />
+                <span className={styles.cardNumber}>0{i + 1}</span>
+                <div className={styles.cardContent}>
+                  <span className={styles.cardTitle}>{s.title}</span>
+                  <span className={styles.cardArrow}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+              </a>
             </Link>
           ))}
         </div>

@@ -1,14 +1,13 @@
-"use client";
-
 import { useState } from "react";
 import { useLang } from "../context/LangContext";
 import styles from "./Contact.module.css";
+import { useReveal } from "../utils/useReveal";
 
 const CONTENT = {
   fr: {
     tag: "Contact",
     title: "Parlons de votre projet",
-    subtitle: "Получllez vos coordonnées et nous vous rappelons sous 24h. Premier rendez-vous gratuit et sans engagement.",
+    subtitle: "Laissez vos coordonnées et nous vous rappelons sous 24h. Premier rendez-vous gratuit et sans engagement.",
     name: "Votre nom",
     email: "Votre email",
     phone: "Votre téléphone",
@@ -41,6 +40,7 @@ export default function Contact() {
   const { lang } = useLang();
   const C = CONTENT[lang];
   const [sent, setSent] = useState(false);
+  const { ref, visible } = useReveal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,12 +48,12 @@ export default function Contact() {
   };
 
   return (
-    <section className={styles.contact} id="contact">
-      {/* Fond décoratif */}
-      <div className={styles.blob} aria-hidden="true" />
-
+    <section
+      className={`${styles.contact} ${visible ? styles.visible : ""}`}
+      ref={ref}
+      id="contact"
+    >
       <div className={styles.inner}>
-        {/* En-tête */}
         <div className={styles.header}>
           <span className={styles.tag}>{C.tag}</span>
           <h2 className={styles.title}>{C.title}</h2>
@@ -61,11 +61,12 @@ export default function Contact() {
         </div>
 
         <div className={styles.grid}>
-          {/* Formulaire */}
           {!sent ? (
             <form className={styles.form} onSubmit={handleSubmit}>
-              <input required className={styles.input} type="text" placeholder={C.name} />
-              <input required className={styles.input} type="email" placeholder={C.email} />
+              <div className={styles.row}>
+                <input required className={styles.input} type="text" placeholder={C.name} />
+                <input required className={styles.input} type="email" placeholder={C.email} />
+              </div>
               <input className={styles.input} type="tel" placeholder={C.phone} />
               <textarea required className={styles.textarea} rows={5} placeholder={C.message} />
               <button className={styles.submit} type="submit">
@@ -82,7 +83,6 @@ export default function Contact() {
             </div>
           )}
 
-          {/* Infos */}
           <div className={styles.info}>
             {C.info.map((item, i) => (
               <div key={i} className={styles.infoItem}>

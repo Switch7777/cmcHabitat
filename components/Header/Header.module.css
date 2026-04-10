@@ -1,12 +1,15 @@
-/* ===== HERO plein écran — split oblique ===== */
+/* ===== HERO — Fullscreen centered (cmc-cuisine style) ===== */
 .hero {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ── Images de fond (côté droit, plein écran en dessous) ── */
+/* ── Background image layers ── */
 .bgLayer {
   position: absolute;
   inset: 0;
@@ -25,80 +28,68 @@
   object-fit: cover;
   width: 100%;
   height: 100%;
-  transform: scale(1.02);
 }
 
-/* ── Panneau DROIT grisé avec découpe oblique ── */
-.leftPanel {
+/* ── Dark overlay ── */
+.overlay {
   position: absolute;
   inset: 0;
-  z-index: 2;
-
-  /* Clip oblique côté DROIT : bord oblique sur le bord gauche du panneau */
-  clip-path: polygon(54% 0, 100% 0, 100% 100%, 42% 100%);
-
-  background: linear-gradient(
-    135deg,
-    rgba(45, 45, 45, 0.72) 0%,
-    rgba(35, 35, 35, 0.65) 60%,
-    rgba(28, 28, 28, 0.55) 100%
-  );
-  backdrop-filter: blur(2px);
-
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: clamp(2rem, 7vw, 7rem);
-  padding-left: clamp(4rem, 12vw, 14rem); /* espace après l'oblique */
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.4);
 }
 
-/* Pas de trait sur le bord oblique */
-.leftPanel::after {
-  display: none;
-}
-
-/* ── Contenu dans le panneau droit ── */
+/* ── Centered content ── */
 .content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 440px;
   align-items: center;
   text-align: center;
+  gap: 1.5rem;
+  max-width: 700px;
+  padding: 0 2rem;
 }
 
 .heroLogo {
-  width: clamp(160px, 30vw, 300px);
+  width: clamp(240px, 45vw, 500px);
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.8vw, 1.8rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1.4;
 }
 
 .subtitle {
-  font-family: "Jost", sans-serif;
-  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  font-style: italic;
+  font-weight: 400;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.8);
 }
-
-/* ── Accent line ── */
-
 
 .button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1a1a;
+  border: none;
   border-radius: 999px;
-  padding: 0.85rem 1.8rem;
+  padding: 0.9rem 2.2rem;
   text-decoration: none;
-  font-family: "Jost", sans-serif;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  font-size: 0.85rem;
-  backdrop-filter: blur(6px);
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  width: fit-content;
 }
 
 .buttonIcon {
@@ -106,8 +97,9 @@
 }
 
 .button:hover {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: rgba(255, 255, 255, 0.65);
+  background: transparent;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
@@ -115,11 +107,12 @@
   transform: translateX(4px);
 }
 
-/* ===== FLECHE SCROLL ===== */
+/* ===== SCROLL ARROW ===== */
 .scrollArrow {
   position: absolute;
-  bottom: 28px;
-  right: clamp(2rem, 7vw, 7rem);
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 3;
   width: 24px;
   height: 24px;
@@ -138,7 +131,7 @@
 
 .scrollArrowHidden {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateX(-50%) translateY(10px);
 }
 
 @keyframes arrowBlink {
@@ -154,34 +147,16 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .leftPanel {
-    clip-path: none;
-    background: linear-gradient(
-      to bottom,
-      rgba(30, 30, 30, 0.88) 0%,
-      rgba(20, 20, 20, 0.6) 100%
-    );
-    align-items: flex-end;
-    justify-content: flex-start;
-    padding: 0 1.5rem 5rem;
-  }
-
-  .leftPanel::after {
-    display: none;
-  }
-
   .content {
-    max-width: 100%;
+    gap: 1.2rem;
   }
 
   .scrollArrow {
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 20px;
   }
 }
 
-/* Accessibilité */
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .bgLayer,
   .bg,

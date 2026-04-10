@@ -1,8 +1,7 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useLang } from "../context/LangContext";
 import styles from "./Testimonials.module.css";
+import { useReveal } from "../utils/useReveal";
 
 const CONTENT = {
   fr: {
@@ -59,25 +58,41 @@ export default function Testimonials() {
   const { lang } = useLang();
   const C = CONTENT[lang];
   const [active, setActive] = useState(0);
+  const [fading, setFading] = useState(false);
+  const { ref, visible } = useReveal();
 
-  const prev = () => setActive((a) => (a - 1 + C.testimonials.length) % C.testimonials.length);
-  const next = () => setActive((a) => (a + 1) % C.testimonials.length);
+  const goTo = useCallback(
+    (next) => {
+      if (fading) return;
+      setFading(true);
+      setTimeout(() => {
+        setActive(next);
+        setFading(false);
+      }, 280);
+    },
+    [fading]
+  );
+
+  const prev = () => goTo((active - 1 + C.testimonials.length) % C.testimonials.length);
+  const next = () => goTo((active + 1) % C.testimonials.length);
 
   const t = C.testimonials[active];
 
   return (
-    <section className={styles.testimonials} id="temoignages">
+    <section
+      className={`${styles.testimonials} ${visible ? styles.visible : ""}`}
+      ref={ref}
+      id="temoignages"
+    >
       <div className={styles.inner}>
         <div className={styles.header}>
           <span className={styles.tag}>{C.tag}</span>
           <h2 className={styles.title}>{C.title}</h2>
         </div>
 
-        <div className={styles.card}>
-          <div className={styles.stars}>
-            {"★".repeat(t.stars)}
-          </div>
-          <blockquote className={styles.quote}>"{t.text}"</blockquote>
+        <div className={`${styles.card} ${fading ? styles.fading : ""}`}>
+          <div className={styles.stars}>{"★".repeat(t.stars)}</div>
+          <blockquote className={styles.quote}>&quot;{t.text}&quot;</blockquote>
           <div className={styles.author}>
             <span className={styles.authorName}>{t.name}</span>
             <span className={styles.authorLocation}>{t.location}</span>
@@ -95,7 +110,7 @@ export default function Testimonials() {
               <button
                 key={i}
                 className={`${styles.dot} ${i === active ? styles.dotActive : ""}`}
-                onClick={() => setActive(i)}
+                onClick={() => goTo(i)}
                 aria-label={`Témoignage ${i + 1}`}
               />
             ))}

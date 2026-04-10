@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import styles from "./Header.module.css";
@@ -7,8 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLang } from "../context/LangContext";
 
-const NAV_LABELS = {
+const LABELS = {
   fr: {
+    heroTitle: "CMC Habitat",
     heroSubtitle:
       "Inspirer la vision, structurer l'espace pour révéler votre lieu de vie",
     heroCta: "Demandez un rendez-vous",
@@ -16,7 +15,9 @@ const NAV_LABELS = {
     logoAlt: "Logo CMC Habitat",
   },
   en: {
-    heroSubtitle: "Inspiring vision, structuring space to reveal your living place",
+    heroTitle: "CMC Habitat",
+    heroSubtitle:
+      "Inspiring vision, structuring space to reveal your living place",
     heroCta: "Book a Consultation",
     bgAlt: "CMC Habitat projects",
     logoAlt: "CMC Habitat Logo",
@@ -25,18 +26,20 @@ const NAV_LABELS = {
 
 const BACKGROUNDS = [
   "/wallpaper/wallscreen.png",
+  "/wallpaper/slide2.png",
+  "/wallpaper/slide3.png",
 ];
 const SLIDE_INTERVAL_MS = 4500;
 const FADE_MS = 1400;
 
 export default function Header({ onLoaded }) {
   const { lang } = useLang();
-  const L = NAV_LABELS[lang];
+  const L = LABELS[lang];
   const [bgIndex, setBgIndex] = useState(0);
   const timerRef = useRef(null);
   const [showArrow, setShowArrow] = useState(true);
 
-  // Précharge images
+  // Preload images
   useEffect(() => {
     if (typeof window === "undefined") return;
     BACKGROUNDS.forEach((src) => {
@@ -68,7 +71,7 @@ export default function Header({ onLoaded }) {
     };
   }, []);
 
-  // Flèche scroll
+  // Scroll arrow
   useEffect(() => {
     const onScroll = () => {
       setShowArrow((window.scrollY || window.pageYOffset || 0) <= 40);
@@ -80,8 +83,7 @@ export default function Header({ onLoaded }) {
 
   return (
     <div className={styles.hero} style={{ "--fade-ms": `${FADE_MS}ms` }}>
-
-      {/* Images de fond plein écran */}
+      {/* Background images */}
       {BACKGROUNDS.map((src, i) => (
         <div
           key={src}
@@ -90,41 +92,40 @@ export default function Header({ onLoaded }) {
           <Image
             src={src}
             alt={L.bgAlt}
-            fill
+            layout="fill"
+            objectFit="cover"
             className={styles.bg}
             priority={i === 0}
-            onLoad={i === 0 ? onLoaded : undefined}
+            onLoadingComplete={i === 0 ? onLoaded : undefined}
           />
         </div>
       ))}
 
-      {/* Panneau gauche grisé avec bord oblique */}
-      <div className={styles.leftPanel}>
-        <div className={styles.content}>
-          {/* Logo */}
-          <div className={styles.heroLogo}>
-            <Image
-              src="/logo.png"
-              alt={L.logoAlt}
-              width={300}
-              height={104}
-              style={{ width: "100%", height: "auto" }}
-              priority
-            />
-          </div>
+      {/* Dark overlay */}
+      <div className={styles.overlay} />
 
-          {/* Sous-titre */}
-          <p className={styles.subtitle}>{L.heroSubtitle}</p>
-
-          {/* CTA */}
-          <Link href="/contact" className={styles.button}>
-            <span>{L.heroCta}</span>
-            <ArrowRight size={18} className={styles.buttonIcon} />
-          </Link>
+      {/* Centered content */}
+      <div className={styles.content}>
+        <div className={styles.heroLogo}>
+          <img
+            src="/logo.png"
+            alt={L.logoAlt}
+            style={{ width: "100%", height: "auto" }}
+          />
         </div>
+
+        
+        <p className={styles.subtitle}>{L.heroSubtitle}</p>
+
+        <Link href="/contact">
+          <a className={styles.button}>
+            <span>{L.heroCta}</span>
+            <ArrowRight size={16} className={styles.buttonIcon} />
+          </a>
+        </Link>
       </div>
 
-      {/* Flèche scroll */}
+      {/* Scroll arrow */}
       <div
         className={`${styles.scrollArrow} ${showArrow ? "" : styles.scrollArrowHidden}`}
       >

@@ -1,8 +1,5 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import styles from "./Navbar.module.css";
 import { User } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
@@ -50,7 +47,7 @@ const NAV_LABELS = {
 export default function Navbar() {
   const { lang, switchLang } = useLang();
   const L = NAV_LABELS[lang] || NAV_LABELS.fr;
-const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [solid, setSolid] = useState(false);
 
@@ -70,7 +67,7 @@ const [open, setOpen] = useState(false);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []); // [] → un seul listener, jamais re-souscrit
+  }, []);
 
   // resize → on ferme le mobile (iPad inclus à 1024px)
   useEffect(() => {
@@ -106,27 +103,24 @@ const [open, setOpen] = useState(false);
         </button>
 
         <div className={styles.brand}>
-          <Link href="/" className={styles.brandLink} aria-label={L.brandAria}>
-
-            <span className={styles.logoWrap}>
-              <Image
-                src="/logo.png"
-                alt="CMC"
-                width={166}
-                height={60}
-                sizes="166px"
-                style={{ width: "100%", height: "auto" }}
-                priority
-              />
-            </span>
-
+          <Link href="/">
+            <a className={styles.brandLink} aria-label={L.brandAria}>
+              <span className={styles.logoWrap}>
+                <img
+                  src="/logo.png"
+                  alt="CMC"
+                  width={166}
+                  height={60}
+                />
+              </span>
+            </a>
           </Link>
         </div>
 
         {/* Liens centraux (desktop uniquement) */}
         <div className={styles.links}>
-          <Link href="/" className={styles.navItem}>
-            {L.home}
+          <Link href="/">
+            <a className={styles.navItem}>{L.home}</a>
           </Link>
 
           <div className={styles.dropdown}>
@@ -142,50 +136,47 @@ const [open, setOpen] = useState(false);
               </span>
             </button>
             <div className={styles.submenu} role="menu">
-              <Link href="/stepProject" role="menuitem" className={styles.submenuItem}>
-
-                {L.stepProject}
-
+              <Link href="/stepProject">
+                <a role="menuitem" className={styles.submenuItem}>
+                  {L.stepProject}
+                </a>
               </Link>
-              <Link href="/consulting" role="menuitem" className={styles.submenuItem}>
-
-                {L.consulting}
-
+              <Link href="/consulting">
+                <a role="menuitem" className={styles.submenuItem}>
+                  {L.consulting}
+                </a>
               </Link>
-              <Link href="/architecture" role="menuitem" className={styles.submenuItem}>
-
-                {L.architecture}
-
+              <Link href="/architecture">
+                <a role="menuitem" className={styles.submenuItem}>
+                  {L.architecture}
+                </a>
               </Link>
-              <Link href="/moe" role="menuitem" className={styles.submenuItem}>
-
-                {L.moe}
-
+              <Link href="/moe">
+                <a role="menuitem" className={styles.submenuItem}>
+                  {L.moe}
+                </a>
               </Link>
-             
             </div>
           </div>
 
-          <Link href="/realisation" className={styles.navItem}>
-            {L.works}
+          <Link href="/realisation">
+            <a className={styles.navItem}>{L.works}</a>
           </Link>
-          <Link href="/quiSommesNous" className={styles.navItem}>
-            {L.aboutUs}
+          <Link href="/quiSommesNous">
+            <a className={styles.navItem}>{L.aboutUs}</a>
           </Link>
 
-          <Link href="/contact" className={styles.cta}>
-            {L.cta}
+          <Link href="/contact">
+            <a className={styles.cta}>{L.cta}</a>
           </Link>
         </div>
 
         {/* Droite (desktop uniquement) */}
         <div className={styles.rightIcons}>
-          
-          
-          <Link href="/login" className={styles.profileLink} aria-label={L.accountAria}>
-
-            <User size={22} strokeWidth={1.6} />
-
+          <Link href="/login">
+            <a className={styles.profileLink} aria-label={L.accountAria}>
+              <User size={22} strokeWidth={1.6} />
+            </a>
           </Link>
           <div className={styles.vDivider} aria-hidden="true" />
           <div className={styles.langSwitch} role="group" aria-label="Lang">
@@ -257,8 +248,8 @@ const [open, setOpen] = useState(false);
         className={`${styles.mobileMenu} ${open ? styles.mobileMenuOpen : ""}`}
       >
         <div className={styles.mobileInner}>
-          <Link href="/" onClick={() => setOpen(false)}>
-            {L.home}
+          <Link href="/">
+            <a onClick={() => setOpen(false)}>{L.home}</a>
           </Link>
 
           <button
@@ -281,43 +272,43 @@ const [open, setOpen] = useState(false);
               id="mobile-services-submenu"
               className={`${styles.mobileSubmenu} ${styles.mobileSubmenuOpen}`}
             >
-              <Link href="/stepProject" onClick={() => setOpen(false)}>
-                {L.stepProject}
+              <Link href="/stepProject">
+                <a onClick={() => setOpen(false)}>{L.stepProject}</a>
               </Link>
-              <Link href="/servicesSdb" onClick={() => setOpen(false)}>
-                {L.servicesBathroom}
+              <Link href="/consulting">
+                <a onClick={() => setOpen(false)}>{L.consulting}</a>
               </Link>
-              <Link href="/servicesPlacard" onClick={() => setOpen(false)}>
-                {L.servicesCloset}
+              <Link href="/architecture">
+                <a onClick={() => setOpen(false)}>{L.architecture}</a>
               </Link>
-              <Link href={EXTERNAL_URL} onClick={() => setOpen(false)}>
-                {L.servicesRenovation}
+              <Link href="/moe">
+                <a onClick={() => setOpen(false)}>{L.moe}</a>
               </Link>
             </div>
           )}
 
-          <Link href="/realisation" onClick={() => setOpen(false)}>
-            {L.works}
+          <Link href="/realisation">
+            <a onClick={() => setOpen(false)}>{L.works}</a>
           </Link>
-          <Link href="/quiSommesNous" onClick={() => setOpen(false)}>
-            {L.aboutUs}
+          <Link href="/quiSommesNous">
+            <a onClick={() => setOpen(false)}>{L.aboutUs}</a>
           </Link>
-          <Link
-            href="/contact"
-            className={styles.mobileCta}
-            onClick={() => setOpen(false)}>
-
-            {L.cta}
-
+          <Link href="/contact">
+            <a
+              className={styles.mobileCta}
+              onClick={() => setOpen(false)}
+            >
+              {L.cta}
+            </a>
           </Link>
 
-          <Link
-            href="/login"
-            className={styles.mobileProfile}
-            onClick={() => setOpen(false)}>
-
-            <User size={18} strokeWidth={1.5} />
-
+          <Link href="/login">
+            <a
+              className={styles.mobileProfile}
+              onClick={() => setOpen(false)}
+            >
+              <User size={18} strokeWidth={1.5} />
+            </a>
           </Link>
         </div>
       </div>
